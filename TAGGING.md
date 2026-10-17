@@ -34,7 +34,7 @@ Keep an item only if it is about **school education** (early childhood and pre-p
 Drop it (`keep: false`) if:
 - **its main subject is a single Indian state or UT.** That covers a state government's announcements, a state board's notices, news or opinion about one state's schools, and a study of a single state. National or multi-state items stay.
 - it is mainly about higher education (universities, college admissions, JEE/NEET coaching, study abroad) with no school angle;
-- it is an exam-result listing, an admit-card notice, a date sheet, a holiday notice, a job advertisement, a competition or an award with no policy content;
+- it is an exam-result listing, an admit-card notice, a date sheet, a holiday notice, a job advertisement or vacancy, a fundraising appeal, a competition or an award with no policy content;
 - it is a social-media post (Instagram, Facebook, X, LinkedIn, YouTube) rather than an article, report or official release;
 - it is about crime, accidents or celebrities, or is otherwise unrelated to education policy and practice;
 - it is a duplicate of another item in the same batch, in which case keep the version from the more official source.
@@ -43,7 +43,7 @@ Drop it (`keep: false`) if:
 
 - **govt**: the main subject is an official action or announcement by the **Union government** or its bodies (MoE, PIB, NCERT, CBSE, NIOS, KVS/NVS, Parliament). This includes news reports of such announcements.
 - **news**: national reporting, features, analysis, editorials or opinion pieces on school education in India that are not mainly an official announcement.
-- **research**: reports, studies, surveys, datasets, research papers or policy briefs on Indian school education by researchers, think tanks, NGOs, multilaterals or academic institutions, or news coverage of such a report.
+- **research**: reports, studies, surveys, datasets, research papers, policy briefs, **and research or analysis blogs** (for example an Accountability Initiative, CPR, IDR or Ideas for India post analysing a scheme, budget or dataset) on Indian school education by researchers, think tanks, NGOs, multilaterals or academic institutions, or news coverage of such a report. Organisational news from these groups (job openings, fundraising, event announcements, staff news, annual galas) is **dropped**, not filed as research.
 - **global**: **school-education reports, policy briefs and research only**, published outside India or about other countries or the world:
   - reports, policy briefs, working papers, evaluations, research papers and data releases (for example from the organisations listed under priority 5, other foundations, think tanks and universities);
   - research summaries or evidence blog posts from these organisations, or news coverage of a new report.
