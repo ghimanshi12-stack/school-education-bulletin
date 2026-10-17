@@ -101,6 +101,20 @@ def feed_items(xml_text):
                it.findtext(atom + "summary") or "", "")
 
 
+def wp_documents(base, cutoff):
+    """Latest documents (press releases, notices, reports) from a Ministry of Education WordPress site.
+    Yields the same tuples as feed_items."""
+    api = base.rstrip("/") + "/cms/wp-json/wp/v2/"
+    cats = {c["id"]: c for c in json.loads(http_get(api + "documents_category?per_page=100&_fields=id,slug,parent", 40))}
+    rows = json.loads(http_get(api + "documents?per_page=25&orderby=date&_fields=date_gmt,slug,title,documents_category", 40))
+    for r in rows:
+        top = next((cats[c]["slug"] for c in r.get("documents_category", []) if c in cats and not cats[c]["parent"]), "")
+        if not top:
+            continue
+        link = f"{base.rstrip('/')}/documents/{top}/{r['slug']}"
+        yield html.unescape(r["title"]["rendered"]), link, r["date_gmt"] + "Z", "", base.split("//")[1]
+
+
 def parse_date(s):
     if not s:
         return None
@@ -248,13 +262,14 @@ def main():
     if not args.repair:
         for s in cfg.get("sources", []):
             win = max(args.days, int(s.get("windowDays", 0) or 0))
-            if s["type"] == "rss":
+            if s["type"] in ("rss", "wpdocs"):
                 url = s["url"]
             else:
                 q = urllib.parse.quote(f'{s["query"]} when:{win}d')
                 url = (f"https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en" if s.get("intl")
                        else f"https://news.google.com/rss/search?q={q}&hl=en-IN&gl=IN&ceid=IN:en")
             feeds.append({"name": s["name"], "section": s["section"], "url": url, "eduOnly": bool(s.get("eduOnly")),
+                          "type": s["type"], "source": s.get("source"),
                           "cutoff": now - timedelta(days=win, hours=6)})
 
     print(f"Reading {len(feeds)} feeds (window: {args.days} day(s))...")
@@ -262,7 +277,10 @@ def main():
     new_ids = set()
     for f in feeds:
         try:
-            entries = list(feed_items(http_get(f["url"], timeout=30)))
+            if f["type"] == "wpdocs":
+                entries = list(wp_documents(f["url"], f["cutoff"]))
+            else:
+                entries = list(feed_items(http_get(f["url"], timeout=30)))
         except Exception as e:
             errors += 1
             print(f"  ! {f['name']}: {e}")
@@ -271,7 +289,7 @@ def main():
         for title, link, pub, desc, src in entries:
             if count >= per_feed:
                 break
-            src = src or f["name"].split(" – ")[0]
+            src = f.get("source") or src or f["name"].split(" – ")[0]
             if src and title.endswith(" - " + src):
                 title = title[: -len(src) - 3]
             title = strip_html(title)
