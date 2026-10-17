@@ -80,7 +80,7 @@ def iso(dt):
 
 def feed_items(xml_text):
     """Yields (title, link, pubdate, description, source) from RSS or Atom."""
-    root = ET.fromstring(xml_text)
+    root = ET.fromstring(xml_text.lstrip("﻿ \t\r\n"))  # some feeds start with blank lines
     atom = "{http://www.w3.org/2005/Atom}"
     for it in root.iter("item"):
         link = (it.findtext("link") or "").strip()
@@ -208,10 +208,10 @@ def main():
             if s["type"] == "rss":
                 url = s["url"]
             else:
-                q = urllib.parse.quote(f'{s["query"]} when:{args.days}d')
+                q = urllib.parse.quote(f'{s["query"]} when:{win}d')
                 url = (f"https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en" if s.get("intl")
                        else f"https://news.google.com/rss/search?q={q}&hl=en-IN&gl=IN&ceid=IN:en")
-            feeds.append({"name": s["name"], "section": s["section"], "url": url,
+            feeds.append({"name": s["name"], "section": s["section"], "url": url, "eduOnly": bool(s.get("eduOnly")),
                           "cutoff": now - timedelta(days=win, hours=6)})
 
     print(f"Reading {len(feeds)} feeds (window: {args.days} day(s))...")
@@ -235,7 +235,8 @@ def main():
             published = parse_date(pub)
             if published and published < f["cutoff"]:
                 continue
-            if not EDU_PATTERN.search(title) or not re.match(r"^https?://", link or ""):
+            # Education-only organisations skip the keyword filter (their report titles rarely say "school").
+            if not (f["eduOnly"] or EDU_PATTERN.search(title)) or not re.match(r"^https?://", link or ""):
                 continue
             iid = item_id(title)
             if iid in seen or iid in candidates:

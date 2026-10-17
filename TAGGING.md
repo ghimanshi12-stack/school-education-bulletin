@@ -19,10 +19,10 @@ For each input file `data/work/in-NN.json`, write `data/tagged/batch-NN.json` (s
 ```
 
 `priority` (1–5) is required for **global** items only. The site shows at most 10 global items per day, highest priority first:
-- **5**: a major report or flagship release from a multilateral (UNESCO GEM Report, World Bank, OECD/PISA, UNICEF), or major cross-country research.
-- **4**: a significant national policy or reform in a low- or middle-income country, or a notable research study.
-- **3**: other national policy news, or useful evidence or commentary relevant to India's priorities (FLN, ECE, AI, assessment, financing).
-- **2**: national policy news from high-income countries with limited relevance to India.
+- **5**: a new report, policy brief or research paper published by a key evidence organisation: What Works Hub for Global Education, GEEAP, RISE, UNESCO (including the GEM Report), UNICEF (including Innocenti), World Bank, OECD, Gates Foundation, Brookings, CGD, EdTech Hub, J-PAL, IDinsight, Results for Development, PAL Network / Teaching at the Right Level, Education Commission or GPE.
+- **4**: another notable research study, evaluation or policy brief on school education, especially on FLN, ECE, teachers, assessment, technology/AI or financing.
+- **3**: a research summary or evidence blog post from one of these organisations, or news coverage of a new report.
+- **2**: a minor or older research item with limited relevance to India's priorities.
 - **1**: marginal items.
 
 Every input id must appear exactly once, including the ones you drop with `"keep": false`. When `keep` is false, the only other field you need is `id`.
@@ -44,12 +44,11 @@ Drop it (`keep: false`) if:
 - **govt**: the main subject is an official action or announcement by the **Union government** or its bodies (MoE, PIB, NCERT, CBSE, NIOS, KVS/NVS, Parliament). This includes news reports of such announcements.
 - **news**: national reporting, features, analysis, editorials or opinion pieces on school education in India that are not mainly an official announcement.
 - **research**: reports, studies, surveys, datasets, research papers or policy briefs on Indian school education by researchers, think tanks, NGOs, multilaterals or academic institutions, or news coverage of such a report.
-- **global**: international policy and research only:
-  - reports and updates from multilaterals (UNESCO, World Bank, OECD/PISA, UNICEF, GPE and others);
-  - cross-country or global research and evidence;
-  - another country's **national** education policy or reform.
+- **global**: **school-education reports, policy briefs and research only**, published outside India or about other countries or the world:
+  - reports, policy briefs, working papers, evaluations, research papers and data releases (for example from the organisations listed under priority 5, other foundations, think tanks and universities);
+  - research summaries or evidence blog posts from these organisations, or news coverage of a new report.
 
-  Drop local or district-level school news from other countries, as well as crime, protests, celebrity and human-interest stories.
+  A study set in one country (for example an evaluation in Kenya) counts, because it is published research. **Drop** everything that is not a report or research: country-specific news, government announcements or policy updates from other countries, funding or partnership announcements, events and conferences, op-eds without new evidence, and crime, protest, celebrity or human-interest stories. Higher-education-only research is also dropped.
 
 `sectionHint` shows which feed found the item. Treat it as a starting point and correct it when the content says otherwise.
 

@@ -1,5 +1,5 @@
 {
-  "_help": "Each source is either a Google News search (type: gnews, with a query) or a direct RSS feed (type: rss, with a url). section: govt | news | research | global. Add or remove entries freely. State-level stories are intentionally excluded (see TAGGING.md).",
+  "_help": "Each source is either a Google News search (type: gnews, with a query) or a direct RSS feed (type: rss, with a url). section: govt | news | research | global. Add or remove entries freely. State-level stories are intentionally excluded (see TAGGING.md). Global = school-education reports, policy briefs and research only (no country news): direct feeds first, then targeted searches of each organisation's own site. windowDays = how far back a source looks (seen items are never repeated).",
   "maxPerFeedDaily": 12,
   "maxPerFeedBackfill": 30,
   "sources": [
@@ -39,14 +39,27 @@
     { "name": "IMPRI (direct)", "type": "rss", "section": "research", "windowDays": 30, "url": "https://www.impriindia.com/feed/" },
     { "name": "Think tanks (ORF, Brookings India, others)", "type": "gnews", "section": "research", "query": "(\"Observer Research Foundation\" OR \"Brookings\" OR \"think tank\") India school education" },
 
-    { "name": "UNESCO – education reports", "type": "gnews", "section": "global", "intl": true, "query": "UNESCO education (report OR \"GEM Report\" OR policy)" },
-    { "name": "World Bank – education", "type": "gnews", "section": "global", "intl": true, "query": "\"World Bank\" education (report OR \"learning poverty\" OR policy)" },
-    { "name": "OECD / PISA", "type": "gnews", "section": "global", "intl": true, "query": "OECD education report OR PISA" },
-    { "name": "UNICEF – education", "type": "gnews", "section": "global", "intl": true, "query": "UNICEF education (report OR learning) children" },
-    { "name": "Global Partnership for Education (direct)", "type": "rss", "section": "global", "windowDays": 30, "url": "https://www.globalpartnership.org/rss.xml" },
-    { "name": "Brookings / CGD / GPE", "type": "gnews", "section": "global", "intl": true, "query": "(site:brookings.edu OR site:cgdev.org OR \"Global Partnership for Education\") education" },
-    { "name": "Foundational learning (global)", "type": "gnews", "section": "global", "intl": true, "query": "\"foundational learning\" OR \"early childhood education\" (report OR research OR policy)" },
-    { "name": "AI in education (global policy)", "type": "gnews", "section": "global", "intl": true, "query": "\"AI\" education (policy OR guidance OR report) schools ministry" },
-    { "name": "Education research (global)", "type": "gnews", "section": "global", "intl": true, "query": "education research study (\"low- and middle-income\" OR \"developing countries\" OR global) learning" }
+    { "name": "What Works Hub for Global Education (direct)", "type": "rss", "eduOnly": true, "section": "global", "windowDays": 30, "url": "https://www.wwhge.org/feed/" },
+    { "name": "PAL Network (direct)", "type": "rss", "eduOnly": true, "section": "global", "windowDays": 30, "url": "https://palnetwork.org/feed/" },
+    { "name": "EdTech Hub (direct)", "type": "rss", "eduOnly": true, "section": "global", "windowDays": 30, "url": "https://edtechhub.org/feed/" },
+    { "name": "Education Commission (direct)", "type": "rss", "eduOnly": true, "section": "global", "windowDays": 30, "url": "https://educationcommission.org/feed/" },
+    { "name": "Results for Development (direct)", "type": "rss", "section": "global", "windowDays": 30, "url": "https://r4d.org/feed/" },
+    { "name": "Global Partnership for Education (direct)", "type": "rss", "eduOnly": true, "section": "global", "windowDays": 30, "url": "https://www.globalpartnership.org/rss.xml" },
+    { "name": "What Works Hub for Global Education", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "\"What Works Hub for Global Education\" OR site:wwhge.org" },
+    { "name": "GEEAP (Smart Buys)", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "\"Global Education Evidence Advisory Panel\" OR GEEAP OR \"Smart Buys\" education" },
+    { "name": "RISE Programme", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "site:riseprogramme.org OR \"RISE Programme\" education" },
+    { "name": "UNESCO GEM Report", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "\"GEM Report\" OR \"Global Education Monitoring Report\" OR site:world-education-blog.org" },
+    { "name": "UNESCO – education reports", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "UNESCO (report OR \"policy brief\" OR study) (school OR learning OR teachers)" },
+    { "name": "UNICEF Innocenti", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "\"UNICEF Innocenti\" OR site:unicef.org/innocenti (education OR learning OR school)" },
+    { "name": "World Bank – education reports", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "site:worldbank.org education (report OR brief OR \"learning poverty\" OR study)" },
+    { "name": "OECD – education reports", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "OECD (\"Education at a Glance\" OR PISA OR TALIS OR \"education report\" OR \"education policy\")" },
+    { "name": "Gates Foundation – education", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "(\"Gates Foundation\" OR site:gatesfoundation.org) (education OR math OR literacy OR school) (report OR research OR brief OR study)" },
+    { "name": "Brookings – education research", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "site:brookings.edu education (report OR research OR brief)" },
+    { "name": "CGD – education", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "site:cgdev.org education" },
+    { "name": "EdTech Hub", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "\"EdTech Hub\" (report OR study OR evidence)" },
+    { "name": "J-PAL / IDinsight / R4D – education", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "(J-PAL OR IDinsight OR \"Results for Development\") education (study OR evaluation OR report OR evidence)" },
+    { "name": "Teaching at the Right Level / PAL Network", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "\"Teaching at the Right Level\" OR \"PAL Network\" OR ICAN assessment" },
+    { "name": "Education Commission", "type": "gnews", "section": "global", "intl": true, "windowDays": 14, "query": "\"Education Commission\" (report OR brief) learning" },
+    { "name": "School education research (global)", "type": "gnews", "section": "global", "intl": true, "windowDays": 7, "query": "(report OR \"policy brief\" OR \"working paper\" OR study) (\"foundational learning\" OR \"learning outcomes\" OR \"school education\") (global OR \"low- and middle-income\")" }
   ]
 }
