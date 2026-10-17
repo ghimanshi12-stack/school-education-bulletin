@@ -8,6 +8,7 @@ Global is capped at the 10 highest-priority items per day (IST).
 Usage:  python3 scripts/merge.py
 """
 import json
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -27,6 +28,25 @@ GLOBAL_PER_DAY = 10
 # coverage of an announcement goes to News & Opinion instead.
 OFFICIAL_SUFFIXES = (".gov.in", ".nic.in", "sansad.in", "nios.ac.in", "mygov.in")
 NOT_OFFICIAL = ("ddnews.gov.in", "newsonair.gov.in", "prasarbharati.gov.in")
+
+
+# City and regional editions of national papers (e.g. TOI /city/, HT /cities/, Tribune /news/amritsar/).
+REGIONAL_PATH = re.compile(
+    r"/(city|cities|local|states|southern-states|northern-states)/|thehindu\.com/news/national/[a-z-]+/|"
+    r"tribuneindia\.com/news/(?!india|nation|opinion|editorials|comment|features|business|world|education|schools|health|science)[a-z-]+/",
+    re.I)
+
+
+def host_of(url):
+    return urlparse(url or "").netloc.lower().split(":")[0]
+
+
+def on_domain(host, domains):
+    return any(host == d or host.endswith("." + d) for d in domains)
+
+
+def is_national_news(url, outlets):
+    return on_domain(host_of(url), outlets) and not REGIONAL_PATH.search(url or "")
 
 
 def is_official(url):
@@ -120,6 +140,15 @@ def main():
             it["section"] = "news"
             refiled += 1
 
+    # News & Opinion is national outlets only (config/sources.json "nationalNews"); regional pieces are dropped.
+    outlets = read_json(ROOT / "config" / "sources.json", {}).get("nationalNews") or []
+    not_national = 0
+    if outlets:
+        for it in [i for i in items if i.get("section") == "news" and not is_national_news(i.get("url"), outlets)]:
+            items.remove(it)
+            seen.add(it["id"])
+            not_national += 1
+
     # Global is capped per IST day so India sections aren't crowded out.
     capped = 0
     days = {}
@@ -148,7 +177,7 @@ def main():
     for f in tagged_dir.glob("*.json") if tagged_dir.exists() else []:
         f.unlink()
 
-    print(f"Added {added}, dropped {dropped}, removed on re-check {removed}, govt re-filed to news {refiled}, global over daily cap {capped}, "
+    print(f"Added {added}, dropped {dropped}, removed on re-check {removed}, govt re-filed to news {refiled}, non-national news dropped {not_national}, global over daily cap {capped}, "
           f"still untagged {untagged}. Total in bulletin: {len(items)}.")
 
 
