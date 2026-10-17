@@ -111,7 +111,9 @@ def wp_documents(base, cutoff):
         top = next((cats[c]["slug"] for c in r.get("documents_category", []) if c in cats and not cats[c]["parent"]), "")
         if not top:
             continue
-        link = f"{base.rstrip('/')}/documents/{top}/{r['slug']}"
+        # The site's own item pages render blank when opened directly, so link to the category list
+        # (Press Release, Reports...), where the item sits at the top. The #doc= part keeps links unique.
+        link = f"{base.rstrip('/')}/documents/{top}#doc={r['slug'][:80]}"
         yield html.unescape(r["title"]["rendered"]), link, r["date_gmt"] + "Z", "", base.split("//")[1]
 
 
@@ -349,7 +351,7 @@ def main():
     ordered = [results.get(p["id"], p) for p in pending_all] + \
               [results.get(i, candidates[i]) for i in candidates if i in new_ids]
     for r in ordered:
-        key = re.sub(r"[?#].*$", "", r["url"]).rstrip("/").lower()
+        key = re.sub(r"#(?!doc=).*$", "", re.sub(r"\?[^#]*", "", r["url"])).rstrip("/").lower()
         if key in by_url:
             continue
         by_url.add(key)
