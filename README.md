@@ -4,8 +4,8 @@
 
 A daily bulletin of school education updates from India and the world. It has four sections:
 
-1. **Central Government**: Ministry of Education, PIB, NCERT, CBSE, NIOS, KVS/NVS and Parliament.
-2. **News & Opinion**: national reporting, editorials and opinion pieces on school education in India.
+1. **Central Government**: official updates only, published on government websites: PIB press releases, and Ministry of Education, NCERT, CBSE, NIOS, KVS/NVS and Parliament reports, bulletins and notices. Media coverage of these goes under News & Opinion.
+2. **News & Opinion**: all newspaper and media pieces: national reporting (including coverage of government announcements), editorials and opinion pieces on school education in India.
 3. **Research & Reports**: reports, studies, surveys and policy briefs by researchers and think tanks on Indian school education.
 4. **Global**: international policy and research, including UNESCO, World Bank, OECD, UNICEF, cross-country studies and other countries' national policies.
 

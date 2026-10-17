@@ -10,6 +10,7 @@ Usage:  python3 scripts/merge.py
 import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -20,6 +21,19 @@ VALID_THEMES = ["ece", "fln", "tech_ai", "secondary", "assessment", "budget", "g
                 "teachers", "curriculum", "equity", "infrastructure", "vocational"]
 FIELDS = ["id", "title", "url", "source", "published", "section", "themes", "type", "priority", "blurb", "added"]
 GLOBAL_PER_DAY = 10
+
+# Central Government only carries items published on official Union government websites
+# (PIB, Ministry of Education, NCERT, CBSE, Parliament ...). Newspaper and broadcaster
+# coverage of an announcement goes to News & Opinion instead.
+OFFICIAL_SUFFIXES = (".gov.in", ".nic.in", "sansad.in", "nios.ac.in", "mygov.in")
+NOT_OFFICIAL = ("ddnews.gov.in", "newsonair.gov.in", "prasarbharati.gov.in")
+
+
+def is_official(url):
+    host = urlparse(url or "").netloc.lower().split(":")[0]
+    if any(host == d or host.endswith("." + d) for d in NOT_OFFICIAL):
+        return False
+    return any(host == s.lstrip(".") or host.endswith(s if s.startswith(".") else "." + s) for s in OFFICIAL_SUFFIXES)
 
 
 def read_json(path, default):
@@ -99,6 +113,13 @@ def main():
         if t.get("themes") is not None:
             it["themes"] = clean_themes(t["themes"])
 
+    # Central Government is official sources only; everything else there moves to News.
+    refiled = 0
+    for it in items:
+        if it.get("section") == "govt" and not is_official(it.get("url")):
+            it["section"] = "news"
+            refiled += 1
+
     # Global is capped per IST day so India sections aren't crowded out.
     capped = 0
     days = {}
@@ -127,7 +148,7 @@ def main():
     for f in tagged_dir.glob("*.json") if tagged_dir.exists() else []:
         f.unlink()
 
-    print(f"Added {added}, dropped {dropped}, removed on re-check {removed}, global over daily cap {capped}, "
+    print(f"Added {added}, dropped {dropped}, removed on re-check {removed}, govt re-filed to news {refiled}, global over daily cap {capped}, "
           f"still untagged {untagged}. Total in bulletin: {len(items)}.")
 
 
