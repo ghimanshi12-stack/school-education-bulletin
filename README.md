@@ -1,6 +1,6 @@
 # School Education Pulse
 
-**Live site:** https://ghimanshi12-stack.github.io/csf-education-bulletin/
+**Live site:** https://ghimanshi12-stack.github.io/school-education-bulletin/
 
 A daily bulletin of school education updates from India and the world. It has four sections:
 
