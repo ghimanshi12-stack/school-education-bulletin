@@ -2,6 +2,8 @@
 
 Claude follows these rules each day when it reads the batches in `data/work/in-NN.json` and writes the tagged items.
 
+**These rules take precedence over any shorter summary of them in the scheduled-run prompt.** In particular, blurbs are 3–4 sentences (70–110 words) written from the article `text` (see "Blurb" below), and Central Government is official government websites only.
+
 ## Output
 
 For each input file `data/work/in-NN.json`, write `data/tagged/batch-NN.json` (same `NN`). It's a JSON array with exactly one object per input id:
@@ -14,7 +16,7 @@ For each input file `data/work/in-NN.json`, write `data/tagged/batch-NN.json` (s
   "themes": ["fln", "assessment"],
   "type": "announcement | circular | scheme | news | opinion | report | research-paper | policy-brief | data",
   "priority": 3,
-  "blurb": "2–3 sentence summary."
+  "blurb": "3–4 sentence summary of what the piece says."
 }
 ```
 
@@ -71,11 +73,20 @@ Drop it (`keep: false`) if:
 
 Add every theme the item clearly relates to (often 1–3). An item can have no theme.
 
-## Blurb: tone and accuracy (important)
+## Blurb: content, tone and accuracy (important)
 
-- Write 2–3 plain sentences (40–70 words) that say what the update is and why it matters for school education.
-- **Use only facts in the title and snippet.** Never add numbers, names or claims that aren't there. If the snippet is empty or unusable, write one cautious sentence based on the title.
-- **Use a modest, neutral and constructive tone throughout.** The blurb must not criticise the Government of India. When an item is an opinion or critical piece, describe it neutrally ("The article discusses…", "The author examines…") without endorsing or adding criticism.
+The blurb is a short summary of **what the piece actually says**, so that a reader who never opens the original still knows its substance. Each input item has a `title`, a `snippet` and, where the page could be read, `text` (the first ~5,000 characters of the article, release or report). Read the `text` and summarise its content.
+
+- Write **3–4 sentences (70–110 words)**.
+- **Lead with the substance, not the topic.** Don't write "This article is about AI literacy" or "The release highlights the importance of X". Say what was decided, found or argued. A blurb that only names the topic is wrong.
+- Cover what matters for the type of piece:
+  - **Government announcement, circular or scheme** (govt): what was announced or decided, by whom, who it applies to, and the key details: numbers, amounts, dates, deadlines, eligibility, targets and next steps.
+  - **News report**: what happened, the key facts and figures, and who said what.
+  - **Opinion, editorial or analysis**: the author's main argument, the 2–3 key points or evidence used, and what they recommend.
+  - **Report, study, survey or data release** (research, global): what was studied, the 2–3 headline findings with their numbers, and the main recommendations.
+- **Use only facts in the title, snippet and text.** Never add numbers, names or claims that aren't there. Keep the numbers you use exactly as given.
+- If `text` is empty or is only site boilerplate (menus, cookie notices, sign-up prompts), write a shorter, cautious summary from the title and snippet, and don't guess at the content.
+- **Use a modest, neutral and constructive tone throughout.** The blurb must not criticise the Government of India. When an item is an opinion or critical piece, report its argument neutrally ("The author argues…", "The piece says…") without endorsing it or adding criticism of your own.
 - Present government initiatives factually and respectfully. Describe gaps as areas of ongoing work or opportunity.
 - Don't copy sentences from the source. Summarise in your own words.
 - Write in English. If the source is in Hindi or another language, summarise it in English.

@@ -11,7 +11,7 @@ A daily bulletin of school education updates from India and the world. It has fo
 
 Stories mainly about a single state or UT are left out on purpose. The bulletin focuses on national and international developments.
 
-Each update is tagged with themes so readers can filter: Early Childhood Education, FLN, Technology & AI, Secondary Education, Assessments, Teachers, Curriculum & Languages, Equity & Inclusion, School Infrastructure, Vocational & Skills, Budgets & Financing, and Governance & Policy. Each card also has a 2–3 line summary and a link to the original.
+Each update is tagged with themes so readers can filter: Early Childhood Education, FLN, Technology & AI, Secondary Education, Assessments, Teachers, Curriculum & Languages, Equity & Inclusion, School Infrastructure, Vocational & Skills, Budgets & Financing, and Governance & Policy. Each card also has a 3–4 sentence summary of what the piece actually says (its key facts, findings or argument), written from the article text, and a link to the original.
 
 ## How the daily update works
 

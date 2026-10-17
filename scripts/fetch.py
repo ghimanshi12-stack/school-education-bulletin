@@ -16,6 +16,9 @@ import html
 import json
 import random
 import re
+import shutil
+import subprocess
+import tempfile
 import time
 import urllib.parse
 import urllib.request
@@ -62,9 +65,13 @@ def strip_html(s):
 
 
 def http_get(url, timeout=20):
+    return http_get_bytes(url, timeout).decode("utf-8", errors="replace")
+
+
+def http_get_bytes(url, timeout=20):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode("utf-8", errors="replace")
+        return r.read()
 
 
 def http_post(url, data, timeout=20):
@@ -150,8 +157,39 @@ def article_snippet(url):
     return strip_html(" ".join(parts))
 
 
+TEXT_CHARS = 5000
+BOILERPLATE = re.compile(r"cookie|subscribe|newsletter|sign up|all rights reserved|follow us|download the app|"
+                         r"advertisement|also read|read more|click here|copyright", re.I)
+
+
+def article_text(url):
+    """Main body text of an article (or a PDF report), so the summary can cover what it actually says."""
+    if re.search(r"\.pdf($|\?)", url, re.I):
+        if not shutil.which("pdftotext"):
+            return ""
+        with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
+            f.write(http_get_bytes(url, timeout=40))
+            f.flush()
+            out = subprocess.run(["pdftotext", "-l", "6", "-q", f.name, "-"], capture_output=True, timeout=60)
+        return re.sub(r"\s+", " ", out.stdout.decode("utf-8", errors="replace")).strip()[:TEXT_CHARS]
+    page = http_get(url)
+    page = re.sub(r"<(script|style|noscript|nav|header|footer|aside|figure)[^>]*>.*?</\1>", " ", page, flags=re.S | re.I)
+    m = re.search(r"<article[^>]*>(.*)</article>", page, re.S | re.I)
+    body = m.group(1) if m and len(m.group(1)) > 2000 else page
+    parts, seen_p = [], set()
+    for pm in re.finditer(r"<(p|li|h2|h3)[^>]*>(.*?)</\1>", body, re.S | re.I):
+        t = strip_html(pm.group(2))
+        if len(t) < 60 or t in seen_p or BOILERPLATE.search(t[:120]):
+            continue
+        seen_p.add(t)
+        parts.append(t)
+        if sum(len(x) for x in parts) > TEXT_CHARS:
+            break
+    return " ".join(parts)[:TEXT_CHARS]
+
+
 def process(item):
-    """Resolves the link and fills in a short text snippet if missing."""
+    """Resolves the link, fills in a short snippet if missing, and pulls the article text."""
     url = item["url"]
     if "news.google.com/rss/articles/" in url:
         url = resolve_google(url)
@@ -161,6 +199,11 @@ def process(item):
             s = article_snippet(url)
             if len(s) > len(snippet):
                 snippet = s
+        except Exception:
+            pass
+    if "news.google.com" not in url and not item.get("isPublished") and len(item.get("text") or "") < 300:
+        try:
+            item["text"] = article_text(url)
         except Exception:
             pass
     item["url"] = url
@@ -186,7 +229,7 @@ def main():
     pending_all = read_json(DATA / "pending.json", [])
     for p in pending_all:
         seen.add(p["id"])
-        if "news.google.com" in p["url"] or not p.get("snippet"):
+        if "news.google.com" in p["url"] or not p.get("snippet") or len(p.get("text") or "") < 300:
             candidates[p["id"]] = p
     if pending_all:
         print(f"Carrying over {len(pending_all)} waiting items ({len(candidates)} to retry)")

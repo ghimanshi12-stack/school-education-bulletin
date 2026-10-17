@@ -16,7 +16,7 @@ DATA = ROOT / "data"
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--size", type=int, default=40)
+    ap.add_argument("--size", type=int, default=15)  # small: each item carries its article text
     args = ap.parse_args()
 
     work, tagged = DATA / "work", DATA / "tagged"
@@ -26,7 +26,7 @@ def main():
         f.unlink()
 
     pending = json.loads((DATA / "pending.json").read_text(encoding="utf-8-sig")) if (DATA / "pending.json").exists() else []
-    keys = ("id", "title", "source", "sectionHint", "snippet")
+    keys = ("id", "title", "source", "sectionHint", "snippet", "text")
     n = 0
     for i in range(0, len(pending), args.size):
         n += 1
