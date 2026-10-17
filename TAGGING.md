@@ -86,6 +86,7 @@ The blurb is a short summary of **what the piece actually says**, so that a read
   - **Report, study, survey or data release** (research, global): what was studied, the 2–3 headline findings with their numbers, and the main recommendations.
 - **Use only facts in the title, snippet and text.** Never add numbers, names or claims that aren't there. Keep the numbers you use exactly as given.
 - If `text` is empty or is only site boilerplate (menus, cookie notices, sign-up prompts), write a shorter, cautious summary from the title and snippet, and don't guess at the content.
+- The blurb is read by the public: **never mention your sources or their limits** (no "the full text was not available", "according to the headline", "the earlier summary", "details are not described here"). Just state what is known.
 - **Use a modest, neutral and constructive tone throughout.** The blurb must not criticise the Government of India. When an item is an opinion or critical piece, report its argument neutrally ("The author argues…", "The piece says…") without endorsing it or adding criticism of your own.
 - Present government initiatives factually and respectfully. Describe gaps as areas of ongoing work or opportunity.
 - Don't copy sentences from the source. Summarise in your own words.
