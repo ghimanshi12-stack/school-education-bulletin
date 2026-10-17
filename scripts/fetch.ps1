@@ -70,6 +70,19 @@ foreach ($p in $pendingAll) {
   if ($p.url -like '*news.google.com*' -or -not $p.snippet) { $candidates[$p.id] = $p }
 }
 if ($pendingAll.Count) { Write-Host "Carrying over $($pendingAll.Count) waiting items ($($candidates.Count) to retry)" }
+
+# Items already in the bulletin whose link still points at Google News are hidden on the site; retry them too.
+$itemsPath = Join-Path $Root 'data\items.json'
+$pubItems = @(Read-Json $itemsPath @())
+$publishedRetry = @{}
+foreach ($p in $pubItems) {
+  if ($p.url -like '*news.google.com*') {
+    $publishedRetry[$p.id] = $p
+    # A long placeholder snippet means only the link is resolved; the summary is already written.
+    $candidates["pub:$($p.id)"] = [pscustomobject]@{ id = $p.id; url = $p.url; snippet = ('-' * 130); isPublished = $true }
+  }
+}
+if ($publishedRetry.Count) { Write-Host "Retrying $($publishedRetry.Count) unresolved links on published items" }
 if ($Repair) { $feeds.Clear() }
 
 Write-Host "Reading $($feeds.Count) feeds (window: $Days day(s))..."
@@ -95,8 +108,12 @@ foreach ($f in $feeds) {
     if ($seen.ContainsKey($id) -or $candidates.ContainsKey($id)) { continue }
     $desc = if ($it.description -is [Xml.XmlElement]) { $it.description.InnerText } else { [string]$it.description }
     $snippet = if ($f.url -like '*news.google.com*') { '' } else { Strip-Html $desc }
+    # Some feeds (e.g. The Hindu) wrap the link in CDATA or repeat it; always take the plain web address.
+    $link = @($it.link | ForEach-Object { if ($_ -is [Xml.XmlElement]) { if ($_.InnerText) { $_.InnerText } else { $_.GetAttribute('href') } } else { [string]$_ } } |
+      Where-Object { $_ -match '^https?://' })[0]
+    if (-not $link) { continue }
     $candidates[$id] = [ordered]@{
-      id = $id; title = $title; url = [string]$it.link; source = $srcName
+      id = $id; title = $title; url = $link.Trim(); source = $srcName
       published = if ($published) { $published.ToString('yyyy-MM-ddTHH:mm:ssZ') } else { (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ') }
       feed = $f.name; sectionHint = $f.section; snippet = $snippet
     }
@@ -115,7 +132,9 @@ $worker = {
   $url = $item.url
   # Google limits rapid lookups, so retry with a growing pause.
   for ($attempt = 1; $attempt -le 3 -and $url -like '*news.google.com/rss/articles/*'; $attempt++) {
-  if ($attempt -gt 1) { Start-Sleep -Seconds (4 * $attempt) }
+  # Space requests out so Google doesn't block the run ("Too Many Requests").
+  Start-Sleep -Milliseconds (Get-Random -Minimum 800 -Maximum 2000)
+  if ($attempt -gt 1) { Start-Sleep -Seconds (10 * $attempt) }
   try {
     if ($url -like '*news.google.com/rss/articles/*') {
       $gid = ($url -split '/articles/')[1].Split('?')[0]
@@ -184,6 +203,17 @@ foreach ($j in @($jobs)) {
 }
 $pool.Close()
 Write-Host "Resolved links and snippets in $([int]$sw.Elapsed.TotalSeconds)s"
+
+# Write repaired links back to published items, and keep them out of the pending list.
+$pubFixed = 0
+foreach ($r in @($results | Where-Object { $_.isPublished })) {
+  if ($r.url -notlike '*news.google.com*') { $publishedRetry[$r.id].url = $r.url; $pubFixed++ }
+}
+if ($publishedRetry.Count) {
+  Write-Json $itemsPath @($pubItems)
+  Write-Host "Repaired $pubFixed of $($publishedRetry.Count) published links"
+}
+$results = @($results | Where-Object { -not $_.isPublished })
 
 # Drop duplicates that only became visible once the real URL was known.
 $byUrl = @{}

@@ -3,23 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>School Education Bulletin</title>
-  <meta name="description" content="Daily bulletin of school education updates from government, news, research and global sources, for colleagues at Central Square Foundation.">
+  <title>School Education Pulse</title>
+  <meta name="description" content="Daily updates on school education from India and the world: central government, news and opinion, research and global developments.">
+  <meta name="theme-color" content="#00316B">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2300316B'/%3E%3Cpath d='M5 17h5l3-8 6 15 3-7h5' fill='none' stroke='%23FFD400' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
   <header class="masthead">
     <div class="wrap masthead-inner">
-      <div>
-        <p class="eyebrow">Central Square Foundation · Internal</p>
-        <h1>School Education Bulletin</h1>
-        <p class="sub">Central government updates, national news and opinion, research, and global developments on school education. Refreshed daily at 5:00 PM IST.</p>
+      <div class="brand">
+        <span class="brand-mark" data-icon="pulse" aria-hidden="true"></span>
+        <div>
+          <p class="eyebrow">Daily briefing · India &amp; the world</p>
+          <h1>School Education <span class="hl">Pulse</span></h1>
+          <p class="sub">Central government updates, national news and opinion, research, and global developments on school education, all in one place.</p>
+        </div>
       </div>
-      <p class="updated" id="updated">Loading…</p>
+      <div class="stats" id="stats" aria-live="polite">
+        <div class="stat"><span class="stat-n" id="stat-today">–</span><span class="stat-l">new today</span></div>
+        <div class="stat"><span class="stat-n" id="stat-week">–</span><span class="stat-l">this week</span></div>
+        <p class="updated"><span data-icon="clock" aria-hidden="true"></span><span id="updated">Loading…</span></p>
+      </div>
     </div>
+    <div class="masthead-stripe" aria-hidden="true"></div>
   </header>
 
   <nav class="tabs-bar" aria-label="Sections">
@@ -30,7 +40,10 @@
     <aside class="filters" id="filters" aria-label="Filters">
       <div class="filter-group">
         <label class="filter-label" for="search">Search</label>
-        <input id="search" type="search" placeholder="e.g. NIPUN, Balvatika, PARAKH" autocomplete="off">
+        <div class="search-box">
+          <span data-icon="search" aria-hidden="true"></span>
+          <input id="search" type="search" placeholder="e.g. NIPUN, Balvatika, PARAKH" autocomplete="off">
+        </div>
       </div>
 
       <div class="filter-group">
@@ -48,22 +61,26 @@
         </div>
       </div>
 
-      <button type="button" class="reset" id="reset">Reset all filters</button>
+      <button type="button" class="reset" id="reset"><span data-icon="reset" aria-hidden="true"></span>Reset all filters</button>
     </aside>
 
     <section class="results" aria-live="polite">
       <div class="results-head">
         <p id="count"></p>
-        <button type="button" class="filter-toggle" id="filter-toggle" aria-controls="filters" aria-expanded="false">Filters</button>
+        <button type="button" class="filter-toggle" id="filter-toggle" aria-controls="filters" aria-expanded="false"><span data-icon="filter" aria-hidden="true"></span>Filters</button>
       </div>
       <div id="list"></div>
     </section>
   </main>
 
-  <footer class="wrap footer">
-    <p>Summaries are generated automatically from each source's headline and opening text. Please read the original source before citing it. Each card links to the original.</p>
+  <footer class="footer">
+    <div class="wrap">
+      <p><strong>School Education Pulse</strong> · refreshed every day at 5:00 PM IST.</p>
+      <p>Summaries are generated automatically from each source's headline and opening text. Please read the original before citing it; every card links to its source.</p>
+    </div>
   </footer>
 
+  <script src="assets/icons.js"></script>
   <script src="assets/app.js"></script>
 </body>
 </html>

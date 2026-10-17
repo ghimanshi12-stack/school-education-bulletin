@@ -1,8 +1,8 @@
-# CSF School Education Bulletin
+# School Education Pulse
 
 **Live site:** https://ghimanshi12-stack.github.io/csf-education-bulletin/
 
-A daily bulletin of school education updates for colleagues at Central Square Foundation. It has four sections:
+A daily bulletin of school education updates from India and the world. It has four sections:
 
 1. **Central Government**: Ministry of Education, PIB, NCERT, CBSE, NIOS, KVS/NVS and Parliament.
 2. **News & Opinion**: national reporting, editorials and opinion pieces on school education in India.

@@ -77,14 +77,14 @@
   function renderTabs() {
     $('tabs').innerHTML = SECTIONS.map(s => {
       const n = items.filter(it => (s.id === 'all' || it.section === s.id) && matches(it, { section: false })).length;
-      return `<button class="tab" role="tab" data-section="${s.id}" aria-selected="${state.section === s.id}">${esc(s.label)}<span class="n">${n}</span></button>`;
+      return `<button class="tab" role="tab" data-section="${s.id}" aria-selected="${state.section === s.id}">${icon(s.id)}${esc(s.label)}<span class="n">${n}</span></button>`;
     }).join('');
   }
 
   function renderThemes() {
     $('themes').innerHTML = THEMES.map(t => {
       const n = items.filter(it => matches(it, { themes: false }) && (it.themes || []).includes(t.id)).length;
-      return `<button type="button" class="chip" data-theme="${t.id}" aria-pressed="${state.themes.has(t.id)}">${esc(t.label)}<span class="n">${n}</span></button>`;
+      return `<button type="button" class="chip" data-theme="${t.id}" aria-pressed="${state.themes.has(t.id)}">${icon(t.id)}${esc(t.label)}<span class="n">${n}</span></button>`;
     }).join('');
     $('clear-themes').hidden = state.themes.size === 0;
   }
@@ -104,13 +104,13 @@
 
   function card(it) {
     const time = new Date(it.published).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-    const tags = (it.themes || []).map(t => `<button type="button" class="tag" data-theme="${t}">${esc(THEME_LABEL[t] || t)}</button>`).join('');
+    const tags = (it.themes || []).map(t => `<button type="button" class="tag" data-theme="${t}">${icon(t)}${esc(THEME_LABEL[t] || t)}</button>`).join('');
     return `<article class="card" data-section="${esc(it.section)}">
-      <div class="meta"><span class="badge">${esc(SECTION_BADGE[it.section] || '')}</span>
-        <span>${esc(it.source || '')}</span><span>${time}</span></div>
+      <div class="meta"><span class="badge">${icon(it.section)}${esc(SECTION_BADGE[it.section] || '')}</span>
+        <span class="src">${esc(it.source || '')}</span><span>${time}</span></div>
       <h3><a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.title)}</a></h3>
       ${it.blurb ? `<p class="blurb">${esc(it.blurb)}</p>` : ''}
-      <div class="foot"><div class="tags">${tags}</div><a class="read" href="${esc(it.url)}" target="_blank" rel="noopener">Read original ↗</a></div>
+      <div class="foot"><div class="tags">${tags}</div><a class="read" href="${esc(it.url)}" target="_blank" rel="noopener">Read original ${icon('external')}</a></div>
     </article>`;
   }
 
@@ -124,7 +124,7 @@
     let html = '', lastDay = '';
     list.slice(0, state.shown).forEach(it => {
       const d = dayLabel(it.published);
-      if (d !== lastDay) { html += `<h2 class="day">${esc(d)}</h2>`; lastDay = d; }
+      if (d !== lastDay) { html += `<h2 class="day">${icon('calendar')}${esc(d)}</h2>`; lastDay = d; }
       html += card(it);
     });
     if (list.length > state.shown) html += `<button type="button" class="more" id="more">Show more (${list.length - state.shown} remaining)</button>`;
@@ -169,7 +169,12 @@
     fetch('data/items.json' + bust).then(r => r.ok ? r.json() : []),
     fetch('data/meta.json' + bust).then(r => r.ok ? r.json() : null).catch(() => null)
   ]).then(([data, meta]) => {
-    items = Array.isArray(data) ? data : [];
+    // Only show items with a working direct link; unresolved Google News links are retried daily.
+    items = (Array.isArray(data) ? data : []).filter(it => /^https?:\/\//.test(it.url || '') && !it.url.includes('news.google.com'));
+    const now = Date.now();
+    const within = days => items.filter(it => now - new Date(it.published).getTime() < days * 86400000).length;
+    $('stat-today').textContent = within(1);
+    $('stat-week').textContent = within(7);
     if (meta && meta.lastUpdated) {
       $('updated').textContent = 'Last updated ' + new Date(meta.lastUpdated).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' IST';
     } else { $('updated').textContent = ''; }
