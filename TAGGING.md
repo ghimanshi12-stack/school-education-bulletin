@@ -62,9 +62,15 @@ Drop it (`keep: false`) if:
 | `tech_ai` | Technology & AI | EdTech, AI in education, DIKSHA, PM eVidya, smart classrooms, digital public infrastructure, APAAR |
 | `secondary` | Secondary Education | Classes 9–12, board structure, vocational/skills in school, dropout at secondary level, stream choice |
 | `assessment` | Assessments | Board exams, PARAKH, NAS, ASER results, learning-outcome surveys, competency-based assessment |
-| `budget_governance` | Budgets & Governance | Budgets and allocations, Samagra Shiksha/PAB, teacher recruitment and deployment, school consolidation, NEP implementation, regulation, administration |
+| `budget` | Budgets & Financing | Union/education budgets, allocations and spending, Samagra Shiksha/PAB approvals, fund releases, education financing (including international aid for education) |
+| `governance` | Governance & Policy | NEP implementation, new policies and guidelines, regulation, administration and accountability, Centre–state coordination, school-level management (SMCs) |
+| `teachers` | Teachers | Teacher training and professional development (NISHTHA), recruitment, TET, deployment and vacancies, teacher education institutions, teacher wellbeing |
+| `curriculum` | Curriculum & Languages | NCF, NCERT textbooks, syllabus changes, pedagogy, mother-tongue and multilingual education, three-language policy |
+| `equity` | Equity & Inclusion | Girls' education, SC/ST and minority students, children with disabilities, RTE 25% seats, out-of-school children, gender and social gaps |
+| `infrastructure` | School Infrastructure | PM SHRI, school buildings and facilities, toilets, electricity, libraries and labs, school consolidation and mergers |
+| `vocational` | Vocational & Skills | Vocational education in schools, skilling, 21st-century and life skills, career guidance, internships for school students |
 
-Only add a theme when the item clearly relates to it. An item can have no theme.
+Add every theme the item clearly relates to (often 1–3). An item can have no theme.
 
 ## Blurb: tone and accuracy (important)
 

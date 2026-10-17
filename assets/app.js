@@ -15,7 +15,13 @@
     { id: 'tech_ai', label: 'Technology & AI' },
     { id: 'secondary', label: 'Secondary Education' },
     { id: 'assessment', label: 'Assessments' },
-    { id: 'budget_governance', label: 'Budgets & Governance' }
+    { id: 'teachers', label: 'Teachers' },
+    { id: 'curriculum', label: 'Curriculum & Languages' },
+    { id: 'equity', label: 'Equity & Inclusion' },
+    { id: 'infrastructure', label: 'School Infrastructure' },
+    { id: 'vocational', label: 'Vocational & Skills' },
+    { id: 'budget', label: 'Budgets & Financing' },
+    { id: 'governance', label: 'Governance & Policy' }
   ];
   const THEME_LABEL = Object.fromEntries(THEMES.map(t => [t.id, t.label]));
   const PAGE = 40;

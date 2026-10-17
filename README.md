@@ -1,5 +1,7 @@
 # CSF School Education Bulletin
 
+**Live site:** https://ghimanshi12-stack.github.io/csf-education-bulletin/
+
 A daily bulletin of school education updates for colleagues at Central Square Foundation. It has four sections:
 
 1. **Central Government**: Ministry of Education, PIB, NCERT, CBSE, NIOS, KVS/NVS and Parliament.
@@ -9,7 +11,7 @@ A daily bulletin of school education updates for colleagues at Central Square Fo
 
 Stories mainly about a single state or UT are left out on purpose. The bulletin focuses on national and international developments.
 
-Each update is tagged with themes (Early Childhood Education, FLN, Technology & AI, Secondary Education, Assessments, Budgets & Governance) so readers can filter, and each card has a 2–3 line summary and a link to the original.
+Each update is tagged with themes so readers can filter: Early Childhood Education, FLN, Technology & AI, Secondary Education, Assessments, Teachers, Curriculum & Languages, Equity & Inclusion, School Infrastructure, Vocational & Skills, Budgets & Financing, and Governance & Policy. Each card also has a 2–3 line summary and a link to the original.
 
 ## How the daily update works
 

@@ -18,7 +18,8 @@ function Write-Json($path, $obj) {
 }
 
 $validSections = @('govt', 'news', 'research', 'global')
-$validThemes   = @('ece', 'fln', 'tech_ai', 'secondary', 'assessment', 'budget_governance')
+$validThemes   = @('ece', 'fln', 'tech_ai', 'secondary', 'assessment', 'budget', 'governance',
+                   'teachers', 'curriculum', 'equity', 'infrastructure', 'vocational')
 
 $pending = @{}
 foreach ($p in @(Read-Json (Join-Path $Data 'pending.json') @())) { $pending[$p.id] = $p }
@@ -67,6 +68,9 @@ foreach ($id in @($tagged.Keys | Where-Object { -not $pending.ContainsKey($_) -a
   if (-not $t.keep) { $items.Remove($it); $removed++; continue }
   if ($validSections -contains $t.section) { $it.section = $t.section }
   if ($t.priority) { $it | Add-Member -NotePropertyName priority -NotePropertyValue ([int]$t.priority) -Force }
+  if ($null -ne $t.themes) {
+    $it.themes = @(@($t.themes) | Where-Object { $validThemes -contains $_ } | Select-Object -Unique)
+  }
 }
 
 # Global is capped at the 10 highest-priority items per day (IST), so India sections aren't crowded out.
