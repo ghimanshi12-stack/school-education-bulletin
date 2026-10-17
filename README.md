@@ -15,7 +15,7 @@ Each update is tagged with themes so readers can filter: Early Childhood Educati
 
 ## How the daily update works
 
-Every day at **5:00 PM IST**, a Claude cloud routine (running on Anthropic's servers, so no laptop needs to be on) does the following:
+Five times a day, at **6 AM, 10 AM, 2 PM, 6 PM and 10 PM IST**, a Claude cloud routine (running on Anthropic's servers, so no laptop needs to be on) does the following:
 
 1. **Collects** new items from the feeds in `config/sources.json` (`scripts/fetch.py`).
 2. **Tags and summarises** each item following the rules in `TAGGING.md`, using the existing Claude plan.
