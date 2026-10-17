@@ -15,14 +15,16 @@ Each update is tagged with themes so readers can filter: Early Childhood Educati
 
 ## How the daily update works
 
-Every day at **5:00 PM IST**, a scheduled task in the Claude desktop app on the bulletin owner's computer does the following:
+Every day at **5:00 PM IST**, a Claude cloud routine (running on Anthropic's servers, so no laptop needs to be on) does the following:
 
-1. **Collects** new items from the feeds in `config/sources.json` (`scripts/fetch.ps1`).
-2. **Tags and summarises** each item following the rules in `TAGGING.md`. Claude does this using the existing Claude plan, so it costs nothing extra.
-3. **Merges** the results into `data/items.json` (`scripts/merge.ps1`).
+1. **Collects** new items from the feeds in `config/sources.json` (`scripts/fetch.py`).
+2. **Tags and summarises** each item following the rules in `TAGGING.md`, using the existing Claude plan.
+3. **Merges** the results into `data/items.json` (`scripts/merge.py`).
 4. **Publishes** the update to GitHub, and the website refreshes within a few minutes.
 
-If the computer is off at 5 PM, the update runs the next time the Claude app is open.
+Items that couldn't be finished in one run wait in `data/pending.json` and are picked up the next day. The routine can be paused, run on demand or edited at https://claude.ai/code/routines.
+
+The older Windows PowerShell versions of the scripts (`*.ps1`) still work on the original laptop as a backup.
 
 ## Common changes
 
@@ -32,7 +34,7 @@ You can ask Claude to make any of these, or edit the files yourself.
 |---|---|
 | Add or remove a news source | `config/sources.json`: add an entry to `sources`. Use `"type": "rss"` with a feed `url`, or `"type": "gnews"` with a Google News search `query` (for example `site:example.org education`). |
 | Change how a theme is defined | The theme table in `TAGGING.md` |
-| Add a new theme | `TAGGING.md` (theme table), `scripts/merge.ps1` (`$validThemes`) and `assets/app.js` (`THEMES`) |
+| Add a new theme | `TAGGING.md` (theme table), `scripts/merge.py` (`VALID_THEMES`), `assets/app.js` (`THEMES`) and an icon in `assets/icons.js` |
 | Change the tone or length of summaries | The "Blurb" section of `TAGGING.md` |
 
 ## Preview on this computer
@@ -49,9 +51,11 @@ Then open http://localhost:8080.
 index.html, assets/        the website
 config/sources.json        the feeds to collect from
 TAGGING.md                 rules Claude follows to tag and summarise
-scripts/fetch.ps1          collect new items  -> data/pending.json
-scripts/split.ps1          split into batches -> data/work/
-scripts/merge.ps1          merge tagged items -> data/items.json
+scripts/fetch.py           collect new items  -> data/pending.json
+scripts/split.py           split into batches -> data/work/
+scripts/merge.py           merge tagged items -> data/items.json
+scripts/*.ps1              Windows versions of the same (laptop backup)
+data/pending.json          items waiting to be tagged
 data/items.json            everything shown on the site (last 365 days)
 data/seen.json             items already processed (so nothing repeats)
 ```

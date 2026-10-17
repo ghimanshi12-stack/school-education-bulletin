@@ -1,4 +1,5 @@
-# Working files used during the daily update (not needed on the website)
+# Working files used during the daily update (not needed on the website).
+# data/pending.json is kept in git so the cloud routine can carry waiting items between days.
 data/work/
 data/tagged/
-data/pending.json
+__pycache__/
