@@ -54,13 +54,19 @@
     Object.assign(state, DEFAULTS); state.themes.clear();
   }
 
+  // ---------- Dates ----------
+  // Items are grouped by the day they were added to the bulletin, always in Indian time.
+  const TZ = 'Asia/Kolkata';
+  const addedAt = it => it.added || it.published;
+  const istKey = d => new Date(d).toLocaleDateString('en-CA', { timeZone: TZ });
+
   // ---------- Filtering ----------
   function matches(it, opts) {
     const o = Object.assign({ section: true, themes: true }, opts);
     if (o.section && state.section !== 'all' && it.section !== state.section) return false;
     if (state.range) {
       const cutoff = Date.now() - state.range * 86400000;
-      if (new Date(it.published).getTime() < cutoff) return false;
+      if (new Date(addedAt(it)).getTime() < cutoff) return false;
     }
     if (o.themes && state.themes.size) {
       const th = it.themes || [];
@@ -94,16 +100,16 @@
   }
 
   function dayLabel(d) {
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    const day = new Date(d); day.setHours(0, 0, 0, 0);
-    const diff = Math.round((today - day) / 86400000);
-    if (diff === 0) return 'Today';
-    if (diff === 1) return 'Yesterday';
-    return day.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const key = istKey(d);
+    const full = new Date(d).toLocaleDateString('en-IN', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const short = new Date(d).toLocaleDateString('en-IN', { timeZone: TZ, day: 'numeric', month: 'long' });
+    if (key === istKey(Date.now())) return 'Today · ' + short;
+    if (key === istKey(Date.now() - 86400000)) return 'Yesterday · ' + short;
+    return full;
   }
 
   function card(it) {
-    const time = new Date(it.published).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    const time = 'Published ' + new Date(it.published).toLocaleDateString('en-IN', { timeZone: TZ, day: 'numeric', month: 'short' });
     const tags = (it.themes || []).map(t => `<button type="button" class="tag" data-theme="${t}">${icon(t)}${esc(THEME_LABEL[t] || t)}</button>`).join('');
     return `<article class="card" data-section="${esc(it.section)}">
       <div class="meta"><span class="badge">${icon(it.section)}${esc(SECTION_BADGE[it.section] || '')}</span>
@@ -123,7 +129,7 @@
     }
     let html = '', lastDay = '';
     list.slice(0, state.shown).forEach(it => {
-      const d = dayLabel(it.published);
+      const d = dayLabel(addedAt(it));
       if (d !== lastDay) { html += `<h2 class="day">${icon('calendar')}${esc(d)}</h2>`; lastDay = d; }
       html += card(it);
     });
@@ -171,10 +177,11 @@
   ]).then(([data, meta]) => {
     // Only show items with a working direct link; unresolved Google News links are retried daily.
     items = (Array.isArray(data) ? data : []).filter(it => /^https?:\/\//.test(it.url || '') && !it.url.includes('news.google.com'));
-    const now = Date.now();
-    const within = days => items.filter(it => now - new Date(it.published).getTime() < days * 86400000).length;
-    $('stat-today').textContent = within(1);
-    $('stat-week').textContent = within(7);
+    // Newest additions first; within the same day, newest publications first.
+    items.sort((a, b) => istKey(addedAt(b)).localeCompare(istKey(addedAt(a))) || String(b.published).localeCompare(String(a.published)));
+    const todayKey = istKey(Date.now());
+    $('stat-today').textContent = items.filter(it => istKey(addedAt(it)) === todayKey).length;
+    $('stat-week').textContent = items.filter(it => Date.now() - new Date(addedAt(it)).getTime() < 7 * 86400000).length;
     if (meta && meta.lastUpdated) {
       $('updated').textContent = 'Last updated ' + new Date(meta.lastUpdated).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' IST';
     } else { $('updated').textContent = ''; }
