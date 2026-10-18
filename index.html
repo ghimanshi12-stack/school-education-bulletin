@@ -33,11 +33,19 @@
   </header>
 
   <nav class="tabs-bar" aria-label="Sections">
-    <div class="wrap tabs" id="tabs" role="tablist"></div>
+    <div class="wrap tabs-row">
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <div class="account" id="account"></div>
+    </div>
   </nav>
 
   <main class="wrap layout">
     <aside class="filters" id="filters" aria-label="Filters">
+      <div class="filter-group">
+        <span class="filter-label">Pick a date <button type="button" class="link-btn" id="clear-date" hidden>Clear</button></span>
+        <div class="cal" id="cal"></div>
+      </div>
+
       <div class="filter-group">
         <label class="filter-label" for="search">Search</label>
         <div class="search-box">
@@ -51,7 +59,7 @@
         <div class="chips" id="themes"></div>
       </div>
 
-      <div class="filter-group">
+      <div class="filter-group" id="range-group">
         <span class="filter-label">Published</span>
         <div class="segmented" id="range" role="radiogroup" aria-label="Date range">
           <button type="button" data-range="1" aria-pressed="false">24 hrs</button>
@@ -67,6 +75,7 @@
     <section class="results" aria-live="polite">
       <div class="results-head">
         <p id="count"></p>
+        <button type="button" class="date-pill" id="date-pill" hidden></button>
         <button type="button" class="filter-toggle" id="filter-toggle" aria-controls="filters" aria-expanded="false"><span data-icon="filter" aria-hidden="true"></span>Filters</button>
       </div>
       <div id="list"></div>
@@ -80,7 +89,27 @@
     </div>
   </footer>
 
+  <dialog class="auth" id="auth-dialog" aria-labelledby="auth-title">
+    <form id="auth-form" novalidate>
+      <button type="button" class="auth-close" id="auth-close" aria-label="Close"><span data-icon="x" aria-hidden="true"></span></button>
+      <h2 id="auth-title">Sign in</h2>
+      <p class="auth-sub" id="auth-sub"></p>
+      <label>Email<input id="auth-email" type="email" autocomplete="email" required></label>
+      <label id="auth-pw-row">Password<input id="auth-password" type="password" autocomplete="current-password" minlength="6"></label>
+      <p class="auth-msg" id="auth-msg" role="alert"></p>
+      <button type="submit" class="auth-submit" id="auth-submit">Sign in</button>
+      <div class="auth-links">
+        <button type="button" class="link-btn" id="auth-forgot">Forgot password?</button>
+        <button type="button" class="link-btn" id="auth-mode">New here? Create an account</button>
+      </div>
+      <div class="auth-or">or</div>
+      <button type="button" class="auth-google" id="auth-google">Continue with Google</button>
+    </form>
+  </dialog>
+
   <script src="assets/icons.js"></script>
+  <script src="assets/firebase-config.js"></script>
+  <script src="assets/account.js"></script>
   <script src="assets/app.js"></script>
 </body>
 </html>

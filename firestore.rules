@@ -1,0 +1,9 @@
+rules_version = '2';
+// Each signed-in reader can read and change only their own saved articles.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/saved/{itemId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

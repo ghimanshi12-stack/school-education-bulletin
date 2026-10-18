@@ -11,6 +11,8 @@ A daily bulletin of school education updates from India and the world. It has fo
 
 Stories mainly about a single state or UT are left out on purpose. The bulletin focuses on national and international developments.
 
+Readers can also pick a day on the **calendar** at the top of the filters to read only that day's updates, and **save** articles to read later (see "Setting up sign-in" below).
+
 Each update is tagged with themes so readers can filter: Early Childhood Education, FLN, Technology & AI, Secondary Education, Assessments, Teachers, Curriculum & Languages, Equity & Inclusion, School Infrastructure, Vocational & Skills, Budgets & Financing, and Governance & Policy. Each card also has a 3–4 sentence summary of what the piece actually says (its key facts, findings or argument), written from the article text, and a link to the original.
 
 ## How the daily update works
@@ -37,6 +39,19 @@ You can ask Claude to make any of these, or edit the files yourself.
 | Add a new theme | `TAGGING.md` (theme table), `scripts/merge.py` (`VALID_THEMES`), `assets/app.js` (`THEMES`) and an icon in `assets/icons.js` |
 | Change the tone or length of summaries | The "Blurb" section of `TAGGING.md` |
 
+## Setting up sign-in
+
+Anyone can save articles with the **Save** button. Until sign-in is set up, saved articles stay in that reader's browser only. With sign-in, readers log in with their email (or Google account) and their saved articles follow them to any device. Sign-in uses Firebase (free plan). One-time setup:
+
+1. Go to https://console.firebase.google.com, choose **Create a project** (Google Analytics is not needed).
+2. **Build → Authentication → Get started**. Under **Sign-in method**, turn on **Email/Password**, and optionally **Google**.
+3. Still in Authentication, open **Settings → Authorized domains** and add `ghimanshi12-stack.github.io`.
+4. **Build → Firestore Database → Create database** (production mode, any location). Open the **Rules** tab, paste the contents of `firestore.rules` from this repository and press **Publish**.
+5. **Project settings** (gear icon) → **Your apps** → the web icon `</>` → register an app (no hosting needed). Copy the `firebaseConfig` object it shows.
+6. Paste it into `assets/firebase-config.js` in place of `null` and publish. A **Sign in** button then appears next to the section tabs.
+
+The Firebase web config is safe to publish; access is controlled by the rules in step 4.
+
 ## Preview on this computer
 
 ```bash
@@ -49,6 +64,9 @@ Then open http://localhost:8080.
 
 ```
 index.html, assets/        the website
+assets/account.js          saved articles and sign-in
+assets/firebase-config.js  Firebase settings for sign-in (null = sign-in off)
+firestore.rules            who can read and write saved articles
 config/sources.json        the feeds to collect from
 TAGGING.md                 rules Claude follows to tag and summarise
 scripts/fetch.py           collect new items  -> data/pending.json
