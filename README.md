@@ -4,7 +4,7 @@
 
 A daily bulletin of school education updates from India and the world. It has four sections:
 
-1. **Central Government**: official updates only, published on government websites: PIB press releases and Ministry of Education reports, bulletins and notices (read directly from dsel.education.gov.in and education.gov.in), plus Parliament. Media coverage of these goes under News & Opinion.
+1. **Central Government**: official updates only, published on government websites: PIB press releases (including a dedicated search for the Department of School Education & Literacy) and Ministry of Education reports, bulletins and notices (read directly from dsel.education.gov.in and education.gov.in), plus Parliament. Media coverage of these goes under News & Opinion.
 2. **News & Opinion**: pieces from national newspapers and media only (list in `config/sources.json`, `nationalNews`): national reporting (including coverage of government announcements), editorials and opinion pieces on school education in India.
 3. **Research & Reports**: reports, studies, surveys and policy briefs by researchers and think tanks on Indian school education.
 4. **Global**: international policy and research, including UNESCO, World Bank, OECD, UNICEF, cross-country studies and other countries' national policies.
@@ -25,6 +25,8 @@ Three times a day, at **12 PM, 5 PM and 10 PM IST**, a Claude cloud routine (run
 4. **Publishes** the update to GitHub, and the website refreshes within a few minutes.
 
 Items that couldn't be finished in one run wait in `data/pending.json` and are picked up the next day. The routine can be paused, run on demand or edited at https://claude.ai/code/routines.
+
+`data/source_status.json` records when each source last worked. If a source has been failing for more than a day, the collect step prints a **WARNING** listing it, and the routine's run report includes it. (Since late November 2026, dsel.education.gov.in shows only a blank UDISE+ page, so its direct read is failing; PIB still carries the department's releases, and the direct read resumes by itself once the site is back.)
 
 The older Windows PowerShell versions of the scripts (`*.ps1`) still work on the original laptop as a backup.
 
@@ -60,4 +62,5 @@ scripts/*.ps1              Windows versions of the same (laptop backup)
 data/pending.json          items waiting to be tagged
 data/items.json            everything shown on the site (last 365 days)
 data/seen.json             items already processed (so nothing repeats)
+data/source_status.json    when each source last worked (failing sources are flagged)
 ```

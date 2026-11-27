@@ -58,6 +58,19 @@ def item_id(title):
     return hashlib.sha1(normalize_title(title).encode("utf-8")).hexdigest()[:12]
 
 
+# Link parameters that only track or style a page. Everything else (e.g. PIB's PRID=...) identifies the article.
+TRACKING_PARAM = re.compile(r"^(utm_.*|fbclid|gclid|ref|reg|lang|amp|outputtype|from|src|source)$", re.I)
+
+
+def url_key(url):
+    """Comparable form of a link, used to drop the same article reached by two feeds."""
+    u = urllib.parse.urlsplit(url.strip())
+    query = sorted((k, v) for k, v in urllib.parse.parse_qsl(u.query) if not TRACKING_PARAM.match(k))
+    frag = u.fragment if u.fragment.startswith("doc=") else ""
+    return (u.netloc.lower().removeprefix("www.") + u.path.rstrip("/").lower()
+            + ("?" + urllib.parse.urlencode(query) if query else "") + ("#" + frag if frag else ""))
+
+
 def strip_html(s):
     if not s:
         return ""
@@ -277,7 +290,10 @@ def main():
     print(f"Reading {len(feeds)} feeds (window: {args.days} day(s))...")
     errors = 0
     new_ids = set()
+    # data/source_status.json: when each source last worked, so a source that breaks doesn't go unnoticed.
+    status = read_json(DATA / "source_status.json", {}) if feeds else {}
     for f in feeds:
+        st = status.setdefault(f["name"], {})
         try:
             if f["type"] == "wpdocs":
                 entries = list(wp_documents(f["url"], f["cutoff"]))
@@ -286,7 +302,9 @@ def main():
         except Exception as e:
             errors += 1
             print(f"  ! {f['name']}: {e}")
+            st.update({"lastError": str(e)[:200], "failingSince": st.get("failingSince") or iso(now)})
             continue
+        st.update({"lastOk": iso(now), "lastError": None, "failingSince": None})
         count = 0
         for title, link, pub, desc, src in entries:
             if count >= per_feed:
@@ -312,6 +330,15 @@ def main():
             new_ids.add(iid)
             count += 1
     print(f"Found {len(new_ids)} new candidate items ({errors} feed errors).")
+    if feeds:
+        names = {f["name"] for f in feeds}
+        write_json(DATA / "source_status.json", {k: v for k, v in status.items() if k in names})
+        broken = [(k, v) for k, v in status.items()
+                  if k in names and v.get("failingSince") and parse_date(v["failingSince"]) < now - timedelta(days=1)]
+        if broken:
+            print("WARNING: these sources have been failing for more than a day (check the site, or update config/sources.json):")
+            for k, v in broken:
+                print(f"  - {k}: failing since {v['failingSince'][:10]}, last worked {(v.get('lastOk') or 'never')[:10]}; {v['lastError']}")
 
     # Resolve links and pull snippets in parallel, within a time budget.
     to_process = list(candidates.values())
@@ -351,7 +378,7 @@ def main():
     ordered = [results.get(p["id"], p) for p in pending_all] + \
               [results.get(i, candidates[i]) for i in candidates if i in new_ids]
     for r in ordered:
-        key = re.sub(r"#(?!doc=).*$", "", re.sub(r"\?[^#]*", "", r["url"])).rstrip("/").lower()
+        key = url_key(r["url"])
         if key in by_url:
             continue
         by_url.add(key)

@@ -11,6 +11,7 @@
     { "name": "Dept. of School Education & Literacy (direct)", "type": "wpdocs", "section": "govt", "eduOnly": true, "windowDays": 14, "source": "Ministry of Education (DoSEL)", "url": "https://dsel.education.gov.in" },
     { "name": "Ministry of Education (direct)", "type": "wpdocs", "section": "govt", "eduOnly": true, "windowDays": 14, "source": "Ministry of Education", "url": "https://www.education.gov.in" },
     { "name": "PIB – Ministry of Education releases", "type": "gnews", "section": "govt", "query": "site:pib.gov.in \"Ministry of Education\"" },
+    { "name": "PIB – Dept. of School Education & Literacy", "type": "gnews", "section": "govt", "eduOnly": true, "windowDays": 14, "query": "site:pib.gov.in (\"School Education\" OR DoSEL OR \"Department of School Education\" OR APAAR OR \"Samagra Shiksha\")" },
     { "name": "Ministry of Education website", "type": "gnews", "section": "govt", "windowDays": 14, "query": "site:education.gov.in OR site:dsel.education.gov.in" },
     { "name": "Parliament – school education (sansad.in)", "type": "gnews", "section": "govt", "windowDays": 14, "query": "site:sansad.in (school OR education OR teachers)" },
     { "name": "Central schemes", "type": "gnews", "section": "news", "query": "\"Samagra Shiksha\" OR \"PM SHRI\" OR \"NIPUN Bharat\" OR \"PM POSHAN\" OR \"Vidya Samiksha Kendra\"" },
